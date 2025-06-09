@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.use({
-  viewport: { width: 1920, height: 1080 }
+  viewport: { width: 1920, height: 1050 }
 });
 
 test('interact with cross-origin iframe', async ({ page }) => {
@@ -33,8 +33,27 @@ test('interact with cross-origin iframe', async ({ page }) => {
   await expect(iframe.locator('.dnbicon-type')).toBeVisible();
   await iframe.locator('.dnbicon-type').click();
 
+//Validating the Text="Heading" is visible or not
   await expect(iframe.locator('span[data-lang-text="Heading"]')).toBeVisible();
   await iframe.locator('span[data-lang-text="Heading"]').click();
+ 
+  await expect(iframe.locator('svg#canvasBackground')).toBeVisible();
+  await  expect(iframe.locator('rect#svg_3')).toBeVisible({timeout:10000});
+
+//Validating the Art is visible or not
+  await iframe.locator('span.tab-caption:has-text("art")').click();
 
   
+ // await expect(iframe.locator('input[data-lang-place-holder="Search"]')).toBeVisible({ timeout: 10000 });
+
+  const searchInput = iframe.locator('input[data-lang-place-holder="Search"]');
+  await expect(searchInput).toBeVisible({timeout: 10000});
+  await searchInput.click();
+  await searchInput.fill('animals');
+  await searchInput.press('Enter');
+
+  await expect(iframe.locator('img[alt="animals2 design"]')).toBeVisible({ timeout: 50000 });
+  await iframe.locator('img[alt="animals2 design"]').click();
+  
+
 });
