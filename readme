@@ -6,6 +6,22 @@ Install playwright :
 Run the test in headed/debug mode:
    npx playwright test --headed --debug
 
+If u face any problem related to unauthorised access as shown in below error:
+      npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scripts is disabled on this system. For more information, see about_Execution_Policies at 
+       https:/go.microsoft.com/fwlink/?LinkID=135170.
+       At line:1 char:1
+       + npx playwright test
+         + ~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException      
+    + FullyQualifiedErrorId : UnauthorizedAccess
+then,
+     open powershell then execute command: To temporary byepass the execution policy
+         Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+     click "Y" , press "Enter".
+
+then , enter the command in vscode and check:
+     npx playwright test 
+
 To check playwright version:
     npm playwright -v
 
@@ -25,3 +41,4 @@ run comands:
     npx playwright test  --project=chromium  : runs on a specific browser
     npx playwright test  --headed  : runs tests in headed mode
     npx playwright test  -debug  :    debug tests
+

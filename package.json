@@ -1,14 +1,25 @@
 {
   "name": "plywright-project-test",
   "version": "1.0.0",
-  "description": "",
+  "description": "Install playwright :\r    npm init playwright@latest   (for latest version)\r    npm install -D @playwright/test\r    npx playwright install",
   "main": "index.js",
   "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.54.2",
     "@types/node": "^22.15.30"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SurabhiBanke25100/playwright-automation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SurabhiBanke25100/playwright-automation/issues"
+  },
+  "homepage": "https://github.com/SurabhiBanke25100/playwright-automation#readme"
 }

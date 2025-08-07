@@ -1,51 +1,71 @@
 import { test, expect } from '@playwright/test';
 
 test.use({
-  viewport: { width: 1920, height: 1050 }
+  viewport: { width: 1903, height: 969 }
 });
 
-test('interact with cross-origin iframe', async ({ page }) => {
-  await page.goto('https://gamiz-wp.designnbuy.biz/');
+test('Designer Tool Automation - Coffee Mug Personalization', async ({ page }) => {
+  // Navigate to the staging site
+  await page.goto('https://stagingaiod4.designnbuy.live/en/');
 
-  // Search for product
-  await page.locator('#dgwt-wcas-search-input-1').click();
-  await page.locator('#dgwt-wcas-search-input-1').fill('T-Shirt (QA)');
-  await page.locator('.dgwt-wcas-st-title', { hasText: 'T-Shirt (QA)' }).click();
+  // Search for the product "coffee mug"
+  const searchInput = page.locator('input#search');
+  await searchInput.click();
+  await searchInput.fill('coffee mug');
+  await page.keyboard.press('Enter');
 
-  // Click personalize
-  await page.getByRole('button', { name: /personalize/i }).click();
+  // Wait for product link and click
+  const productLink = page.locator('a.product-item-link:has-text("coffee mug")');
+  await expect(productLink).toBeVisible();
+  await productLink.click();
 
-  // Interact with iframe
+  // Click on the "Personalize" button
+  const personalizeButton = page.getByRole('button', { name: /personalize/i });
+  await expect(personalizeButton).toBeVisible();
+  await personalizeButton.click();
+
+  // Switch to iframe and validate preview popup
   const iframe = page.frameLocator('#designtool_iframe');
+  /*const previewPopup = iframe.locator('preview-popup#previewPopup');
+  await expect(previewPopup).toBeVisible({timeout: 10000});*/
 
-  await iframe.locator('button#close').waitFor({ state: 'visible' });
-  await iframe.locator('button#close').click();
+  // Close preview popup
+  const closeButton = iframe.locator('button#close');
+  await expect(closeButton).toBeVisible();
+  await closeButton.click();
 
- // await iframe.locator('//div[@class=".modal-header"]').waitFor({ state: 'visible' });
-  //const heading = await page.locator('h5.caption.text-uppercase');
-  //await heading.waitFor({state: 'visible'});
+  // Close tool panel modal
+  const toolPanelClose = iframe.locator('div.modal-header:has-text("Tool Panel") > button.close');
+  await expect(toolPanelClose).toBeVisible();
+  await toolPanelClose.click();
 
- /* const headingText = await heading.textContent();
-  expect(headingText).toBe('Tool Panel');*/
+  // Click on "Text" tool
+  const textToolIcon = iframe.locator('.dnbicon-type');
+  await expect(textToolIcon).toBeVisible();
+  await textToolIcon.click();
 
-  await iframe.locator('div.modal-header:has-text("Tool Panel") > button.close').click();
+  // Validate and click on "Heading" text option
+  const headingText = iframe.locator('span[data-lang-text="Heading"]');
+  await expect(headingText).toBeVisible();
+  await headingText.click();
 
-  await expect(iframe.locator('.dnbicon-type')).toBeVisible();
-  await iframe.locator('.dnbicon-type').click();
-
-//Validating the Text="Heading" is visible or not
-  await expect(iframe.locator('span[data-lang-text="Heading"]')).toBeVisible();
-  await iframe.locator('span[data-lang-text="Heading"]').click();
- 
+  // Validate canvas visibility
   await expect(iframe.locator('svg#canvasBackground')).toBeVisible();
-  await  expect(iframe.locator('rect#svg_3')).toBeVisible();
+  await expect(iframe.locator('rect#svg_3')).toBeVisible();
 
-//Validating the Art is visible or not
-  await iframe.locator('span.tab-caption:has-text("art")').click();
-  const squarebutton= iframe.locator('//button-group[contains(@class,"tool-btn-group")]//dnb-button[@data-keyword="square"]');
-  await expect(squarebutton).toBeVisible();
-  await squarebutton.click();
- 
-   
+  // Click on "Art" tab
+  const artTab = iframe.locator('span.tab-caption:has-text("art")');
+  await expect(artTab).toBeVisible();
+  await artTab.click();
+
+  // Search and select "4th July" art
+  const artSearchInput = iframe.locator('(//input[@data-lang-place-holder="Search"])[2]');
+  await expect(artSearchInput).toBeVisible();
+  await artSearchInput.fill('4th July');
+
+  const artImage = iframe.locator('//img[contains(@alt, "4th July - 1 design")]');
+  await expect(artImage).toBeVisible();
+  await artImage.click();
+
 
 });
