@@ -62,7 +62,7 @@ test('Designer Tool Automation - Coffee Mug Personalization', async ({ page }) =
   const artSearchInput = iframe.locator('(//input[@data-lang-place-holder="Search"])[2]');
   await expect(artSearchInput).toBeVisible();
   await artSearchInput.fill('4th July');
-
+  await expect(iframe.locator('//span[@data-lang-text="Search Result"]')).toBeVisible();
   const artImage = iframe.locator('//img[contains(@alt, "4th July - 1 design")]');
   await expect(artImage).toBeVisible();
   await artImage.click();
