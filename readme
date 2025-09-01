@@ -41,9 +41,43 @@ run comands:
     npx playwright test  --project=chromium  : runs on a specific browser
     npx playwright test  --headed  : runs tests in headed mode
     npx playwright test  -debug :    debug tests  
-
+ 
 To run the codegen:
     npx playwright codegen https://example.com
     
-  
+To integrate the reportportal with playwright
+   npm install --save-dev @reportportal/agent-js-playwright
 
+To add capabilities in configuration file to integrate reportportal :
+   reporter: [
+    ['@reportportal/agent-js-playwright', {  // Add ReportPortal reporter to Playwright config
+      endpoint: 'http://localhost:8080/api/v1',  // ReportPortal server URL (replace with your endpoint)
+      project: 'playwright_project', // Replace with your ReportPortal project name
+      token: 'playwright-api__XMIfcJbSVe0J7q_PVkAuuNfF9uoUfCkgO2lsMBdtgxXepubqDjXYSgz8ynoqjJn',  // ReportPortal user token
+      launch: 'Playwright Test Run', // Launch name (can be dynamic)
+      description: 'Playwright tests integrated with ReportPortal',  // Optional: A description
+    }],
+    ['list'],  // Optional: still show test results in the terminal
+  ],
+ 
+ The Reportportal local server:
+    http://localhost:8080/ui 
+
+
+--------------Note--------------------
+Can you run Playwright & Robot Framework simultaneously with ReportPortal?
+
+Yes, absolutely.
+
+🔑 Key Points:
+✅ What	📌 Details
+Run in parallel	You can run both frameworks at the same time.
+Report to same ReportPortal	Both can report to the same instance and project.
+Separate launches	Use different launch names for each framework to avoid mixing results.
+Real-time reporting	You'll see results from both frameworks live in ReportPortal.
+Use tags/attributes	Add tags like framework:playwright or framework:robot for filtering.
+⚠️ Tips:
+
+❌ Don’t use the same launch name — it will cause conflict.
+
+✅ Group results with attributes for better visibility in the UI.
