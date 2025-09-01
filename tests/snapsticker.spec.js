@@ -1,9 +1,20 @@
 import {test,expect} from '@playwright/test';
-//import { StrictMode } from 'react';
+import { beforeEach } from 'node:test';
+
 test.use({viewport: { width: 1920, height: 1050 }});
 
+test.beforeEach(async({page})=>{
+   
+    await page.goto("https://snapstickers.com/");   
+    
+});
+
+test.afterEach(async({page})=>{
+      await page.close();
+})
+
 test('search the product',async({page})=>{
-     await page.goto("https://snapstickers.com/");
+    
      await expect(page.locator('.announcement-bar')).toHaveText('Welcome to our store');
      await page.getByRole('button',{name: 'Search'}).click();
      await expect(page.locator('#Search-In-Modal')).toBeVisible();
@@ -14,14 +25,14 @@ test('search the product',async({page})=>{
      await page.locator('div.predictive-search__item-content:has-text("Custom Holographic Square Sticker")').click();
 
      await expect(page).toHaveURL('https://snapstickers.com/products/custom-holographic-square-sticker?_pos=1&_psq=custom-holographic-square-sticker&_ss=e&_v=1.0');
-    // await page.getByRole('option',{name: 'custom-holographic-square-sticker'}).click();
+    //await page.getByRole('option',{name: 'custom-holographic-square-sticker'}).click();
      await expect(page.locator('h1')).toHaveText('Custom Holographic Square Sticker');
      //await expect(page.locator('h1')).toHaveText('custom-holographic-square-sticker');
      await page.keyboard.press('ArrowDown');
      await expect(page.locator('#customize')).toBeVisible();
      await page.locator('#customize').click();
 
-     //--------------using iframe to handle the design tool-------
+     //--------------Using iframe to handle the design tool-----------
      const iframe = page.frameLocator('#designtool_iframe');
      await iframe.locator('h5:has-text("Tool Panel")').waitFor({ state: 'visible' });
 
@@ -30,13 +41,19 @@ test('search the product',async({page})=>{
      await iframe.locator('button#close').waitFor({ state: 'visible' });
      await iframe.locator('button#close').click();
      
-     await expect(iframe.locator('.dnbicon-type')).toBeVisible();
-     await iframe.locator('.dnbicon-type').click();
-     
-     //Validating the Text="Heading" is visible or not
-     await expect(iframe.locator('span[data-lang-text="Heading"]')).toBeVisible();
-     await iframe.locator('span[data-lang-text="Heading"]').click();
-       
+     await expect(iframe.locator('span:has-text("text")')).toBeVisible();
+     await iframe.locator('span:has-text("text")').click(); 
 
-     await page.close();
+     //Validating the Text="Heading" is visible or not
+     await expect(iframe.locator('span[data-lang-text="Paragraph Text"]')).toBeVisible();
+     await iframe.locator('span[data-lang-text="Paragraph Text"]').click();
+     await expect(iframe.locator('tspan:has-text("Paragraph heading")')).toBeVisible();
+     
+     //Validating the art on the design tool
+     await expect(iframe.locator('span:has-text("art")')).toBeVisible();
+     await iframe.locator('span:has-text("art")').click();
+     await expect(iframe.locator('search-bar.search-box').nth(1)).toBeVisible();
+     await iframe.locator('search-bar.search-box').nth(1).click();
+     
+            
 });
