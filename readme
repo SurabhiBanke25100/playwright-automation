@@ -34,11 +34,16 @@ Install   extensions of playwright:
 Press command palette (ctrl+shift+p)  :type playwright install  then select the browsers and click "OK".
 
 run comands:
-    npx playwright test    : for running all testcases in all browsers in headless mode.
+    npx playwright test    : For running all testcases in all browsers in headless mode.
     npx playwright test --workers 3   : running with 3 workers in parallel
     npx playwright test  one.spec.js   : running specific test file
-    npx playwright test  one two  :    runs files that have one or two in the filename.
+    npx playwright test  one two  :   runs files that have one or two in the filename.
     npx playwright test  --project=chromium  : runs on a specific browser
     npx playwright test  --headed  : runs tests in headed mode
-    npx playwright test  -debug  :    debug tests
+    npx playwright test  -debug :    debug tests  
+
+To run the codegen:
+    npx playwright codegen https://example.com
+    
+  
 
