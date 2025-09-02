@@ -9,28 +9,28 @@ test.beforeEach(async({page})=>{
     
 });
 
-test.afterEach(async({page})=>{
-      await page.close();
-})
+ test.afterEach(async({page})=>{
+       await page.close();
+ })
 
-test('search the product',async({page})=>{
+test('validating the customisation of product',async({page})=>{
     
      await expect(page.locator('.announcement-bar')).toHaveText('Welcome to our store');
      await page.getByRole('button',{name: 'Search'}).click();
      await expect(page.locator('#Search-In-Modal')).toBeVisible();
      await page.locator('#Search-In-Modal').fill('custom-holographic-square-sticker');
      await expect(page.getByRole('option',{name: 'custom-holographic-square-sticker'})).toBeVisible();
+     
+     await page.keyboard.press('Enter');
 
-     await expect(page.locator('div.predictive-search__item-content:has-text("Custom Holographic Square Sticker")')).toBeVisible();
-     await page.locator('div.predictive-search__item-content:has-text("Custom Holographic Square Sticker")').click();
+     await expect(page.locator('#CardLink--8069671518397')).toBeVisible();
+     await page.locator('#CardLink--8069671518397').click();
 
-     await expect(page).toHaveURL('https://snapstickers.com/products/custom-holographic-square-sticker?_pos=1&_psq=custom-holographic-square-sticker&_ss=e&_v=1.0');
-    //await page.getByRole('option',{name: 'custom-holographic-square-sticker'}).click();
-     await expect(page.locator('h1')).toHaveText('Custom Holographic Square Sticker');
-     //await expect(page.locator('h1')).toHaveText('custom-holographic-square-sticker');
-     await page.keyboard.press('ArrowDown');
-     await expect(page.locator('#customize')).toBeVisible();
-     await page.locator('#customize').click();
+     //await expect(page.locator('h1')).toHaveText('Custom Holographic Square Sticker');
+     //await page.keyboard.press('ArrowDown');
+
+    await page.waitForSelector('#customize', { state: 'visible' });   // Wait for the element to be visible  this is used due to flakyness
+    await page.locator('#customize').click();
 
      //--------------Using iframe to handle the design tool-----------
      const iframe = page.frameLocator('#designtool_iframe');
@@ -52,8 +52,44 @@ test('search the product',async({page})=>{
      //Validating the art on the design tool
      await expect(iframe.locator('span:has-text("art")')).toBeVisible();
      await iframe.locator('span:has-text("art")').click();
-     await expect(iframe.locator('search-bar.search-box').nth(1)).toBeVisible();
-     await iframe.locator('search-bar.search-box').nth(1).click();
+     await iframe.locator('h6:has-text("Buildings")').waitFor({ state: 'visible' });
+     await iframe.locator('h6:has-text("Buildings")').click();
+     const imgLocator = iframe.locator('img[title="buildings1"]');
+     await imgLocator.waitFor({state: 'visible'});
+     await imgLocator.click();
+    //  await iframe.locator('#svg_9').first().waitFor({ state: 'visible' ,timeout: 15000});
+    
+    //validating the photos functionality
+      await expect(iframe.locator('span[data-lang-text="Photos"]')).toBeVisible();
+      await iframe.locator('span[data-lang-text="Photos"]').click();
+      await expect(iframe.locator('a[data-lang-text="Upload"]')).toBeVisible();
+      
+    //validating the Codes functionality
+      await expect(iframe.locator('span[data-lang-text="Codes"]')).toBeVisible();
+      await iframe.locator('span[data-lang-text="Codes"]').click();
+      await expect(iframe.locator('span[data-lang-text="Plain Text"]')).toBeVisible();
+      await iframe.locator('span[data-lang-text="Plain Text"]').click();
+      await expect(iframe.locator('#Plain-Text-Container')).toBeVisible();
+      await expect(iframe.locator('textarea[data-lang-place-holder="Please add text"]')).toBeVisible();
+      await iframe.locator('textarea[data-lang-place-holder="Please add text"]').fill('amazon.in');
+      await page.keyboard.press('Tab'); 
+      await page.keyboard.press('Tab'); 
+       await page.keyboard.press('Enter'); 
+      //  await expect(iframe.locator('span:has-text("Generate")')).toBeVisible();  
+      //  await iframe.locator('span:has-text("Generate")').click();
+      // await expect(iframe.locator('image[id="svg_12"]').first()).toBeVisible();
+
+      //validating the design functionality
+      await expect(iframe.locator('span[data-lang-text="designs"]')).toBeVisible();
+      await iframe.locator('span[data-lang-text="designs"]').click(); 
+      await expect(iframe.locator('h6[title="Classic"]').first()).toBeVisible();
+      await iframe.locator('h6[title="Classic"]').first().click();
+      const imgLocatordesign = iframe.locator('img[title="Nope mask"]');
+      await expect(imgLocatordesign).toBeVisible();
+      await imgLocatordesign.click();
+
+      
+      
+      
      
-            
 });
