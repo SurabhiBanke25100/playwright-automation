@@ -5,7 +5,7 @@ test.use({viewport: { width: 1920, height: 1050 }});
 
 test.beforeEach(async({page})=>{
    
-    await page.goto("https://snapstickers.com/");   
+    await page.goto("https://stagingaiod4.designnbuy.live/en/coffee-mug.html/");   
     
 });
 
@@ -15,19 +15,19 @@ test.beforeEach(async({page})=>{
 
 test('validating the customisation of product',async({page})=>{
     
-     await expect(page.locator('.announcement-bar')).toHaveText('Welcome to our store');
-     await page.getByRole('button',{name: 'Search'}).click();
-     await expect(page.locator('#Search-In-Modal')).toBeVisible();
-     await page.locator('#Search-In-Modal').fill('custom-holographic-square-sticker');
-     await expect(page.getByRole('option',{name: 'custom-holographic-square-sticker'})).toBeVisible();
+    //  await expect(page.locator('.announcement-bar')).toHaveText('Welcome to our store');
+    //  await page.getByRole('button',{name: 'Search'}).click();
+    //  await expect(page.locator('#Search-In-Modal')).toBeVisible();
+    //  await page.locator('#Search-In-Modal').fill('custom-holographic-square-sticker');
+    //  await expect(page.getByRole('option',{name: 'custom-holographic-square-sticker'})).toBeVisible();
      
-     await page.keyboard.press('Enter');
+    //  await page.keyboard.press('Enter');
 
-     await expect(page.locator('#CardLink--8069671518397')).toBeVisible();
-     await page.locator('#CardLink--8069671518397').click();
+    //  await expect(page.locator('#CardLink--8069671518397')).toBeVisible();
+    //  await page.locator('#CardLink--8069671518397').click();
 
-     //await expect(page.locator('h1')).toHaveText('Custom Holographic Square Sticker');
-     //await page.keyboard.press('ArrowDown');
+    //  //await expect(page.locator('h1')).toHaveText('Custom Holographic Square Sticker');
+    //  //await page.keyboard.press('ArrowDown');
 
     await page.waitForSelector('#customize', { state: 'visible' });   // Wait for the element to be visible  this is used due to flakyness
     await page.locator('#customize').click();
@@ -88,8 +88,18 @@ test('validating the customisation of product',async({page})=>{
       await expect(imgLocatordesign).toBeVisible();
       await imgLocatordesign.click();
 
-      
-      
+    
+        // Wait for search input to be visible
+        await iframe.locator('input[data-lang-place-holder="Search"]').nth(4).waitFor({ state: 'visible', timeout: 15000 });
+        await iframe.locator('input[data-lang-place-holder="Search"]').nth(4).click();
+        await iframe.locator('input[data-lang-place-holder="Search"]').fill('Artwork');
+
+        await expect(this.iframe.locator('img[title="artistic 20"]')).toBeVisible();
+        await iframe.locator('img[title="artistic 20"]').click();
+        await iframe.locator('button.btn:has-text("Scrap & Add")').waitFor({ state: 'visible', timeout: 15000 });
+        await iframe.locator('button.btn:has-text("Scrap & Add")').click();
+    
+        
       
      
 });
