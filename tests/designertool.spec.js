@@ -22,7 +22,6 @@ test('validating the customisation of product',async({page})=>{
      //--------------Using iframe to handle the design tool-----------
      const iframe = page.frameLocator('#designtool_iframe');
 
-     
      await iframe.locator('h5:has-text("Tool Panel")').waitFor({ state: 'visible' });
 
      await iframe.locator('div.modal-header:has-text("Tool Panel") > button.close').click();
@@ -52,17 +51,17 @@ test('validating the customisation of product',async({page})=>{
 
      const imgframe = iframe.locator('//category-panel[@id="animalsCat"]//div//category-panelitem//div//img').nth(0);
 
-     await expect(imgframe).toBeVisible({timeout:20000});
+     await expect(imgframe).toBeVisible();
      
      const imgLocator = iframe.locator('img[title="buildings1"]');
      await imgLocator.waitFor({state: 'visible', timeout: 15000});
-     await imgLocator.click();
+     await imgframe.click();
      
      await expect(iframe.locator('#workarea')).toBeVisible();
-     const imgvisiblity = iframe.locator('(//*[@id="svgcontent"]//*[@class="layer"])[2]');
+     const imgvisiblity = iframe.locator('//*[@id="svgcontent"]//*[@class="layer"]//*[@id="svg_7"]');
      await expect(imgvisiblity).toBeVisible();
-     console.log(`success msg image is viisble`);
-    //  await iframe.locator('#svg_9').first().waitFor({ state: 'visible' ,timeout: 15000});
+     console.log(`success msg: Art image is viisble`);
+   
     
     //validating the photos functionality
       await expect(iframe.locator('span[data-lang-text="Photos"]')).toBeVisible();
@@ -82,52 +81,72 @@ test('validating the customisation of product',async({page})=>{
       await page.keyboard.press('Tab'); 
       await page.keyboard.press('Enter');
 
-      //  await expect(iframe.locator('span:has-text("Generate")')).toBeVisible();  
-      //  await iframe.locator('span:has-text("Generate")').click();
-      // await expect(iframe.locator('image[id="svg_12"]').first()).toBeVisible();
+
+     await expect(iframe.locator('#workarea')).toBeVisible();
+     const codeimgvisiblity = iframe.locator('//*[@id="svgcontent"]//*[@class="layer"]//*[@id="svg_4"]');
+     await expect(codeimgvisiblity).toBeVisible();
+     console.log(`success msg : Code generated!!!!`);  
+
+
 
       //validating the design functionality
       await expect(iframe.locator('span[data-lang-text="designs"]')).toBeVisible();
       await iframe.locator('span[data-lang-text="designs"]').click(); 
 
-    const designsearchbox =iframe.locator('(//input[@data-lang-place-holder="Search"])[5]');
+     const designsearchbox =iframe.locator('(//input[@data-lang-place-holder="Search"])[5]');
      await designsearchbox.waitFor({ state: 'visible'});
      await designsearchbox.click();
      await designsearchbox.fill('Classic');
 
-    const designimgframe = iframe.locator('//category-panel[@id="designspanel"]//div//category-panelitem//div//img').nth(0);
+     const designimgframe = iframe.locator('//category-panel[@id="designspanel"]//div//category-panelitem//div//img');
 
-     await expect(designimgframe).toBeVisible({timeout:20000});
-     
-     const designimgLocator = iframe.locator('img[title="Nope mask"]');
-     await designimgLocator.waitFor({state: 'visible', timeout: 15000});
-     await designimgLocator.click();
+     await expect(designimgframe.nth(0)).toBeVisible();
+     await designimgframe.nth(0).click();
       
      //wait until window is visible
      await expect(iframe.locator('div.dialog-msg')).toBeVisible();
      //button assertion
-      await expect(iframe.locator('button.btn:has-text("Scrap & Add")')).toBeVisible();
+     await expect(iframe.locator('button.btn:has-text("Scrap & Add")')).toBeVisible();
      await iframe.locator('button.btn:has-text("Scrap & Add")').click();
      
-     await expect(iframe.locator('#workarea')).toBeVisible();
-     const designimgvisiblity = iframe.locator('(//*[@id="svgcontent"]//*[@class="layer"])[4]');
-     await expect(designimgvisiblity).toBeVisible();
-     console.log(`success msg image is viisble`);
+     await expect(iframe.locator('#canvasBackground')).toBeVisible({timeout: 15000});
+    //  const designimgvisiblity = iframe.locator('//*[@id="svgcontent"]//*[@class="layer"]//*[@id="svg_15"]');
+    //  await expect(designimgvisiblity).toBeVisible();
+    //  console.log(`success msg : Design image is visible`);
+
+    //validating the layouts tool
+    const layouttab = iframe.locator('span[data-lang-text="layouts]');
+    if(layouttab.isVisible()){
+     await layouttab.click();
+    }
+
+    const bgtab = iframe.locator('span[data-lang-text="background"]');
+    await bgtab.click();
+
+    const templatetab = iframe.locator('span[data-lang-text="templates"]');
+    if(templatetab.isVisible()){
+      await templatetab.click();
+      const searchbox =iframe.locator('(//input[@data-lang-place-holder="Search"])[4]');
+     await searchbox.waitFor({ state: 'visible'});
+     await searchbox.click();
+     await searchbox.fill('banners');         //should be dynamic
+     
+     const template =  iframe.locator('//category-panel[@id="templatespanel"]//div//category-panelitem//div//img');
+
+     await expect(designimgframe.nth(0)).toBeVisible();
+     await designimgframe.nth(0).click();
+    }
+     
+
+
+    
+    
+   
+
 
 
 
     
-        // Wait for search input to be visible
-        // await iframe.locator('input[data-lang-place-holder="Search"]').nth(4).waitFor({ state: 'visible', timeout: 15000 });
-        // await iframe.locator('input[data-lang-place-holder="Search"]').nth(4).click();
-        // await iframe.locator('input[data-lang-place-holder="Search"]').fill('Artwork');
-
-        // await expect(this.iframe.locator('img[title="artistic 20"]')).toBeVisible();
-        // await iframe.locator('img[title="artistic 20"]').click();
-        // await iframe.locator('button.btn:has-text("Scrap & Add")').waitFor({ state: 'visible', timeout: 15000 });
-        // await iframe.locator('button.btn:has-text("Scrap & Add")').click();
-    
-        
-      
+           
      
 });
