@@ -98,13 +98,13 @@ test('validating the customisation of product',async({page})=>{
      await designsearchbox.click();
      await designsearchbox.fill('Classic');
 
-     const designimgframe = iframe.locator('//category-panel[@id="designspanel"]//div//category-panelitem//div//img');
+     const designimgframe = iframe.locator('//category-panel[@id="designspanel"]//div//category-panelitem//div//img').nth(0);
 
-     await expect(designimgframe.nth(0)).toBeVisible();
-     await designimgframe.nth(0).click();
+     await expect(designimgframe).toBeVisible();
+     await designimgframe.click();
       
      //wait until window is visible
-     await expect(iframe.locator('div.dialog-msg')).toBeVisible();
+     await iframe.locator('div.dialog-msg').waitFor({state:'visible'});
      //button assertion
      await expect(iframe.locator('button.btn:has-text("Scrap & Add")')).toBeVisible();
      await iframe.locator('button.btn:has-text("Scrap & Add")').click();
