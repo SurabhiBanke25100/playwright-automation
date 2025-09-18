@@ -10,18 +10,21 @@ import {test,expect} from '@playwright/test';
  test.afterEach(async({page})=>{
        await page.close();
  });
+ const brandname = 'allen solly';
 
  test('validating the amazon page',async({page})=>{
 await expect(page.locator('#twotabsearchtextbox')).toBeVisible();
-await page.locator('#twotabsearchtextbox').fill('t-shirt for man');
+await page.locator('#twotabsearchtextbox').fill(`t-shirt for man ${brandname}`);
 await page.keyboard.press('Enter');
-//await expect(page.locator('h2:has-text("Results")')).toBeVisible();
-await page.waitForSelector('#brandsRefinements', { state: 'visible' });   // Wait for the element to be visible  this is used due to flakyness
-// // Example: Filter brand "Allen Solly"
-const brandCheckbox = page.getByRole('link', { name: /Allen Solly/i });
-await brandCheckbox.click();
-await expect(brandCheckbox).toBeChecked();
 
-await page.waitForTimeout(5000);
+const products =  page.locator('(//div[contains(@class,s-product-image-container)]//span//a//div//img)')
+await products.nth(0).click();
+
+await expect(page.locator('#productTitle')).waitFor({state:'visible'});
+await page.locator('#inline-twister-expander-content-size_name').waitFor({state:'visible'});
+await expect(page.locator('span#size_name_0-announce')).toBeVisible();
+await page.locator('span#size_name_0-announce').click();
+
+await expect(page.locator('#quantity')).toBeVisible();
 
  });
