@@ -15,16 +15,51 @@ import {test,expect} from '@playwright/test';
  test('validating the amazon page',async({page})=>{
 await expect(page.locator('#twotabsearchtextbox')).toBeVisible();
 await page.locator('#twotabsearchtextbox').fill(`t-shirt for man ${brandname}`);
-await page.keyboard.press('Enter');
+await page.locator('input#nav-search-submit-button').waitFor({state:'visible'});
+await page.locator('input#nav-search-submit-button').click();
 
-const products =  page.locator('(//div[contains(@class,s-product-image-container)]//span//a//div//img)')
-await products.nth(0).click();
+await page.waitForSelector('//div[contains(@class,"puis-card-container")]//div//a//h2//span');
+const products =  await page.$$('//div[contains(@class,"puis-card-container")]//div//a//h2//span');
+for(const product of products){
+   const productlist = await product.textContent();
+   console.log(productlist);
+ 
+}
+const context = page.context();
+const [newPage] = await Promise.all([
+  context.waitForEvent('page'), // wait for new tab
+  page.locator('//div[contains(@class,"puis-card-container")]//div//a//h2//span').first().click()
+]);
 
-await expect(page.locator('#productTitle')).waitFor({state:'visible'});
-await page.locator('#inline-twister-expander-content-size_name').waitFor({state:'visible'});
-await expect(page.locator('span#size_name_0-announce')).toBeVisible();
-await page.locator('span#size_name_0-announce').click();
+await newPage.waitForLoadState('domcontentloaded');
 
-await expect(page.locator('#quantity')).toBeVisible();
+
+// Wait for title section visibility
+await page.locator('#titleSection').waitFor({ state: 'visible', timeout: 10000 });
+await expect(page.locator('#titleSection')).toBeVisible();
+
+// Get and print product title text
+const productTitle = page.locator('#productTitle');
+await productTitle.waitFor({ state: 'visible' });
+const titleText = await productTitle.textContent();
+console.log('Product Title:', titleText.trim());
+T
+
+
+await page.evaluate(()=>{
+      window.scrollBy(0,15);
+});
+
+await page.locator('div#variation_size_name').waitFor({state:'visible'});
+
+//await page.locator('#native_dropdown_selected_size_name').waitFor({state:'visible'});
+
+await page.locator('span#size_name_0').waitFor({state:'visible'});
+await page.locator('span#size_name_0').click();
+
+
+// await expect(page.locator('#quantity')).toBeVisible();
+await page.waitForTimeout(15000);
+
 
  });
