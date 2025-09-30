@@ -1,22 +1,24 @@
 import {test,expect} from '@playwright/test';
-import { error } from 'console';
-import { beforeEach } from 'node:test';
+import { devices } from '@playwright/test';
+import { time } from 'console';
+
 
 test.use({viewport: { width: 1920, height: 1050 }});
 
 const artname = "buildings";
 const  qrcodename = "amazon.in";
 const designame = "classic";
-const templatename = "Template For Circle";
+const templatename = "template for circle";
 const bgname = "Automobiles Business card EN";
 
 test.beforeEach(async({page})=>{
    
-    // await page.goto("https://stagingaiod4.designnbuy.live/en/coffee-mug.html");   
-     await page.goto("https://snapstickers.com/products/custom-holographic-square-sticker?_pos=1&_psq=custom&_ss=e&_v=1.0");
-  //  await page.goto("https://stagingaiod4.designnbuy.live/en/t-shirtblack.html");
-  // await page.goto("https://clickprinterco.com/products/vinyl-banners-copy");
-  
+  // await page.goto("https://stagingaiod4.designnbuy.live/en/coffee-mug.html");   
+    //await page.goto("https://bwgraphics.com/products/vinyl-banners-copy?_pos=1&_psq=viny&_ss=e&_v=1.0");
+  // await page.goto("https://stagingaiod4.designnbuy.live/en/t-shirtblack.html");
+  await page.goto("https://clickprinterco.com/products/vinyl-banners-copy");
+
+    
   });
 
  test.afterEach(async({page})=>{
@@ -25,17 +27,17 @@ test.beforeEach(async({page})=>{
 
 test('validating the customisation of product',async({page})=>{
 
-    await page.waitForSelector('#customize', { state: 'visible' });      // Wait for the element to be visible  this is used due to flakyness
+    await page.waitForSelector('#customize', { state: 'visible' });      //Wait for the element to be visible  this is used due to flakyness
     await page.locator('#customize').click();
 
      //--------------Using iframe to handle the design tool-----------
      const iframe = page.frameLocator('#designtool_iframe');
     
-     const toolpanel =  iframe.locator('h5:has-text("Tool Panel")');
+     const toolpanel = iframe.locator('h5:has-text("Tool Panel")');
 
-     if(toolpanel.isVisible()){
+     if(toolpanel.isVisible()){ 
      await iframe.locator('div.modal-header:has-text("Tool Panel") > button.close').click();
-     }
+     } 
      else{
       console.warn("tool panel not visible!!");
      }
@@ -61,10 +63,25 @@ test('validating the customisation of product',async({page})=>{
      //Validating the Text="Heading" is visible or not
      await expect.soft(iframe.locator('span[data-lang-text="Paragraph Text"]')).toBeVisible();
      await iframe.locator('span[data-lang-text="Paragraph Text"]').click();
+     
+    //  try{
+    //  const Unexpectedtokererrtext = iframe.locator('div.dialog-icon');
+    //  if(Unexpectedtokererrtext.isVisible()){
+    //     await expect(iframe.locator('//div[contains(@class, "dialog-msg")]//p[contains(., "Unexpected token")]')).toBeVisible();
+    //      await expect(iframe.locator('button.btn:has-text("Got It")')).toBeVisible();
+    //      await iframe.locator('button.btn:has-text("Got It")').click();
+    //  }
+    // }
+    // catch(error){
+    //    console.log("Error not found!!,continue the testing!!");
+    // }
 
      const textvalidation = iframe.locator('//*[@id="svgcontent"]//*[contains(@class, "layer")]/*[starts-with(@id, "svg_") and name()="g"]/*[name()="rect"]').nth(0);
      await expect(textvalidation).toBeVisible();
      
+
+      console.log(`success msg: Text element is visible`);
+    
      //Validating the art on the design tool
      await expect.soft(iframe.locator('span[data-lang-text="art"]')).toBeVisible();
      await iframe.locator('span[data-lang-text="art"]').click();
@@ -73,24 +90,79 @@ test('validating the customisation of product',async({page})=>{
      await searchbox.waitFor({ state: 'visible'});
      await searchbox.click();
      await searchbox.fill(`${artname}`);
-//content is to be changed
+      //content is dynamic 
      const imgframe = iframe.locator('//category-panel[@id="animalsCat"]//div//category-panelitem//div//img').nth(0);
      await expect.soft(imgframe).toBeVisible();
      
      const imgLocator = iframe.locator('img[title="buildings1"]');
-     await imgLocator.waitFor({state: 'visible', timeout: 15000});
+     await imgLocator.waitFor({state: 'visible', timeout: 30000});
      await imgframe.click();
      
+    //  try{
+    //  const tokenerrelementart = iframe.locator('div.dialog-icon');
+    //  if(await tokenerrelementart.isVisible()){
+    //   await expect(iframe.locator('//div[contains(@class, "dialog-msg")]//p[contains(., "Unexpected token")]')).toBeVisible();
+    //   await expect(iframe.locator('button.btn:has-text("Got It")')).toBeVisible();
+    //   await iframe.locator('button.btn:has-text("Got It")').click();
+    //  }
+    // }
+    // catch(error){
+    //   console.log("Error not found!!,coninue the testing!!");
+    // }
+    
      await expect(iframe.locator('#workarea')).toBeVisible();
      const imgvisiblity = iframe.locator('//*[@id="svgcontent"]//*[contains(@class, "layer")]/*[contains(@id, "svg_") and name()="g" and .//*[name()="path" and @fill]]');
-    //  await expect(imgvisiblity).toBeVisible();
+     await expect(imgvisiblity).toBeVisible();
+    
      console.log(`success msg: Art image is viisble`);
    
     
     //validating the photos functionality
-     await expect(iframe.locator('span[data-lang-text="Photos"]')).toBeVisible();
-     // await iframe.locator('span[data-lang-text="Photos"]').click();
-    //   await expect(iframe.locator('a[data-lang-text="Upload"]')).toBeVisible();
+      await expect(iframe.locator('span[data-lang-text="Photos"]')).toBeVisible();
+      await iframe.locator('span[data-lang-text="Photos"]').click();
+      await iframe.locator('tab-pane#photoPanel').waitFor({state:'visible'});
+      await iframe.locator('dnb-tabpanel#addTab').waitFor({state:'visible'});
+      await iframe.locator('#mycomputer').waitFor({state:'visible'});
+
+     //checking the overlays or preloader are hidden or not to check the chekbox:
+     //await iframe.locator('.preloader-wrapper, .modal').waitFor({ state: 'hidden', timeout: 15000 });
+
+     //--------------------checking with diff methoid-------
+    const labelLocator = iframe.locator('label.custom-control-label[for^="imageRights-"]');
+    await expect(labelLocator).toBeVisible({ timeout: 10000 });
+    await labelLocator.click();
+
+    const checkboxLocator = iframe.locator('input.custom-control-input[id^="imageRights-"][type="checkbox"]');
+    const isChecked = await checkboxLocator.isChecked();
+    console.log("Checkbox checked state:", isChecked);
+     
+    await iframe.locator('span[data-lang-text="Drag & drop file or click to browse file, supported file(s) {.jpg, .jpeg, .png, .ai, .eps, .pdf}"]').isEnabled();
+    await iframe.locator('//dnb-tabpanel[@id="mycomputer"]//div[contains(@class,"upload-file-item")]//i').waitFor({state:'visible'});
+     // await iframe.locator('//dnb-tabpanel[@id="mycomputer"]//div[contains(@class,"upload-file-item")]//i').click();
+      //uploading the file using setinputfiles
+
+      // const filePath = 'C:\\Users\\DNB\\Documents\\Plywright project test\\playwright-automation\\tests\\UploadFiles\\catface.jpg';
+      // await iframe.locator('input#file-upload-DnB1759226383307_17u79kfmymu_5').setInputFiles(filePath);
+      // await iframe.waitForTimeout(5000);  //wait for 5 sec to load the image
+      // console.log("file is uploaded successfully!!");
+
+//---------------------------------------------
+     const filePath =  'C:/Users/DNB/Documents/Plywright project test/playwright-automation/tests/UploadFiles/catface.jpg';
+
+     const fileInput = iframe.locator('input#file-upload-DnB1759226383307_17u79kfmymu_5[type="file"]');
+      
+// Directly set files without clicking upload icon
+    // Upload file via hidden input
+
+await fileInput.setInputFiles(filePath);
+
+// Wait for image gallery container to update with new uploaded image
+await iframe.locator('.image-gallery img[alt="image"]').waitFor({ state: 'visible', timeout: 10000 });
+
+// Optionally assert count or src attribute of image added
+const uploadedImagesCount = await iframe.locator('.image-gallery img').count();
+console.log('Uploaded images count:', uploadedImagesCount);
+
 
       
     //validating the Codes functionality
@@ -108,9 +180,13 @@ test('validating the customisation of product',async({page})=>{
      await expect(iframe.locator('#workarea')).toBeVisible();
      const codeimgvisiblity = iframe.locator('//*[@id="svgcontent"]//*[contains(@class, "layer")]/*[name()="image" and contains(@*[local-name()="href"], "QRcode")]');
      await expect(codeimgvisiblity).toBeVisible();
+
      console.log(`success msg : Code generated!!!!`);  
 
+    
+//------------------------------------------------------------------------------
       //validating the design functionality
+      
       await expect(iframe.locator('span[data-lang-text="designs"]')).toBeVisible();
       await iframe.locator('span[data-lang-text="designs"]').click(); 
       await iframe.locator('tab-pane#designsPanel').waitFor({state:'visible'});
@@ -120,6 +196,7 @@ test('validating the customisation of product',async({page})=>{
      await designsearchbox.click();
      await designsearchbox.fill(`${designame}`);  
 
+    
      const designimgframe = iframe.locator('//category-panel[@id="designspanel"]//div//category-panelitem//div//img').nth(0);
 
      await designimgframe.waitFor({state:'visible'});
@@ -129,8 +206,7 @@ test('validating the customisation of product',async({page})=>{
      await iframe.locator('div.dialog-msg').waitFor({state:'visible'});
      //button assertion
      await expect(iframe.locator('button.btn:has-text("Scrap & Add")')).toBeVisible();
-     await iframe.locator('button.btn:has-text("Scrap & Add")').click(); 
-     
+     await iframe.locator('button.btn:has-text("Scrap & Add")').click();  
      await expect(iframe.locator('#canvasBackground')).toBeVisible({timeout: 15000});
      console.log("design img displayed successfully!");
 
