@@ -13,10 +13,10 @@ const bgname = "Automobiles Business card EN";
 
 test.beforeEach(async({page})=>{
    
-  // await page.goto("https://stagingaiod4.designnbuy.live/en/coffee-mug.html");   
+   await page.goto("https://stagingaiod4.designnbuy.live/en/coffee-mug.html");   
     //await page.goto("https://bwgraphics.com/products/vinyl-banners-copy?_pos=1&_psq=viny&_ss=e&_v=1.0");
   // await page.goto("https://stagingaiod4.designnbuy.live/en/t-shirtblack.html");
-  await page.goto("https://clickprinterco.com/products/vinyl-banners-copy");
+  //await page.goto("https://clickprinterco.com/products/vinyl-banners-copy");
 
     
   });
@@ -138,34 +138,37 @@ test('validating the customisation of product',async({page})=>{
      
     await iframe.locator('span[data-lang-text="Drag & drop file or click to browse file, supported file(s) {.jpg, .jpeg, .png, .ai, .eps, .pdf}"]').isEnabled();
     await iframe.locator('//dnb-tabpanel[@id="mycomputer"]//div[contains(@class,"upload-file-item")]//i').waitFor({state:'visible'});
-     // await iframe.locator('//dnb-tabpanel[@id="mycomputer"]//div[contains(@class,"upload-file-item")]//i').click();
-      //uploading the file using setinputfiles
+    
 
-      // const filePath = 'C:\\Users\\DNB\\Documents\\Plywright project test\\playwright-automation\\tests\\UploadFiles\\catface.jpg';
-      // await iframe.locator('input#file-upload-DnB1759226383307_17u79kfmymu_5').setInputFiles(filePath);
-      // await iframe.waitForTimeout(5000);  //wait for 5 sec to load the image
-      // console.log("file is uploaded successfully!!");
+  //Absolute path for your file (use / or double backslashes for Windows)
+  const filePath = 'C:/Users/DNB/Documents/Plywright project test/playwright-automation/tests/UploadFiles/catface.jpg';
 
-//---------------------------------------------
-     const filePath =  'C:/Users/DNB/Documents/Plywright project test/playwright-automation/tests/UploadFiles/catface.jpg';
+  //Ensure 'mycomputer' tab is visible and active
+  await expect(iframe.locator('#mycomputer')).toBeVisible();
+  await expect(iframe.locator('#mycomputer')).toHaveClass(/active/);
 
-     const fileInput = iframe.locator('input#file-upload-DnB1759226383307_17u79kfmymu_5[type="file"]');
-      
-// Directly set files without clicking upload icon
-    // Upload file via hidden input
+   //Find and set files on the correct hidden input inside 'mycomputer'
+    const fileInput = iframe.locator('#mycomputer input[type="file"][accept*=".jpg"]');
 
-await fileInput.setInputFiles(filePath);
+   // Check the input exists and is hidden
+    const inputCount = await fileInput.count();
+    console.log('Found file inputs:', inputCount);
 
-// Wait for image gallery container to update with new uploaded image
-await iframe.locator('.image-gallery img[alt="image"]').waitFor({ state: 'visible', timeout: 10000 });
+   //Set the file for upload (no need to click any label or icon)
+    await fileInput.setInputFiles(filePath);
 
-// Optionally assert count or src attribute of image added
-const uploadedImagesCount = await iframe.locator('.image-gallery img').count();
-console.log('Uploaded images count:', uploadedImagesCount);
+   //Wait for upload to finish: ensure a new img is present in image-gallery UNDER mycomputer
+    const galleryImage = iframe.locator('#mycomputer .image-gallery img');
+    await galleryImage.waitFor({ state: 'visible', timeout: 12000 });
 
+   //Screenshot for visual validation (optional)
+    await iframe.locator('#mycomputer .image-gallery').screenshot({ path: 'uploaded-gallery.png' });
 
-      
-    //validating the Codes functionality
+  //Check how many images appear
+    const imgCount = await galleryImage.count();
+    console.log('Uploaded images found:', imgCount);
+
+ //validating the Codes functionality
       await expect(iframe.locator('span[data-lang-text="Codes"]')).toBeVisible();
       await iframe.locator('span[data-lang-text="Codes"]').click();
       await expect(iframe.locator('span[data-lang-text="Plain Text"]')).toBeVisible();
