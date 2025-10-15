@@ -32,7 +32,7 @@ export default defineConfig({
       description: 'Playwright tests integrated with ReportPortal',  // Optional: A description
 
       //-----to display the steps in reportportal for passed testcases this attribut "includeTestSteps" is required to add in config file.------
-       includeTestSteps: true,
+      //  includeTestSteps: true,
       // 👇 ADD THIS LINE TO SHOW LOGS FOR PASSED TESTS
      
      // debug: true, // Optional: more detailed logs
@@ -50,14 +50,20 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+     screenshot:'on',
      viewport: { width: 2000, height: 2000 },
+     video: 'on',
   },
    
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'],
+         headless: false,        // Run in headed mode
+       // slowMo: 50,            // Slow down by 50ms
+      },
+
     },
 
     {
@@ -69,6 +75,15 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
+    
+    {
+      name: 'MobileSafari',
+      use: {
+        ...devices['iPhone 12'],
+        browserName: 'webkit',
+      },
+    },
+
 
     /* Test against mobile viewports. */
     // {
